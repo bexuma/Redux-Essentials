@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+/* eslint-disable no-param-reassign */
 
 const initialState = [
   { id: '1', title: 'First Post!', content: 'Hello!' },
@@ -11,6 +11,14 @@ const postsSlice = createSlice({
   reducers: {
     postAdded(state, action) {
       state.push(action.payload);
+    },
+    postUpdated(state, action) {
+      const { id, title, content } = action.payload;
+      const existingPost = state.find((post) => post.id === id);
+      if (existingPost) {
+        existingPost.title = title;
+        existingPost.content = content;
+      }
     },
   },
 });

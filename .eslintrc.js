@@ -20,5 +20,6 @@ module.exports = {
   rules: {
     'import/prefer-default-export': 'off',
     'react/jsx-filename-extension': [2, { extensions: ['.js'] }],
+    'react/prop-types': 'off',
   },
 };
