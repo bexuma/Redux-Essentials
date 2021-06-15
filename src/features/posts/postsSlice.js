@@ -1,6 +1,6 @@
 /* eslint-disable no-plusplus */
 /* eslint-disable no-param-reassign */
-import { createAsyncThunk, createSlice, nanoid } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { client } from '../../api/client';
 
 const initialState = {
@@ -14,6 +14,17 @@ export const fetchPosts = createAsyncThunk('posts/fetchPosts', async () => {
   return response.posts;
 });
 
+export const addNewPost = createAsyncThunk(
+  'posts/addNewPost',
+  // The payload creator receives the partial `{title, content, user}` object
+  async (initialPost) => {
+    // We send the initial data to the fake API server
+    const response = await client.post('/fakeApi/posts', { post: initialPost });
+    // The response includes the complete post object, including unique ID
+    return response.post;
+  },
+);
+
 const postsSlice = createSlice({
   name: 'posts',
   initialState,
@@ -24,22 +35,6 @@ const postsSlice = createSlice({
       if (existingPost) {
         existingPost.reactions[reaction]++;
       }
-    },
-    postAdded: {
-      reducer(state, action) {
-        state.posts.push(action.payload);
-      },
-      prepare(title, content, userId) {
-        return {
-          payload: {
-            id: nanoid(),
-            date: new Date().toISOString(),
-            title,
-            content,
-            user: userId,
-          },
-        };
-      },
     },
     postUpdated(state, action) {
       const { id, title, content } = action.payload;
@@ -63,10 +58,14 @@ const postsSlice = createSlice({
       state.status = 'failed';
       state.error = action.error.message;
     },
+    [addNewPost.fulfilled]: (state, action) => {
+      // We can directly add the new post object to our posts array
+      state.posts.push(action.payload);
+    },
   },
 });
 
-export const { postAdded, postUpdated, reactionAdded } = postsSlice.actions;
+export const { postUpdated, reactionAdded } = postsSlice.actions;
 
 export default postsSlice.reducer;
 
