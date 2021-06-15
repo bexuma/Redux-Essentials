@@ -1,4 +1,5 @@
 /* eslint-disable no-param-reassign */
+import { createSlice, nanoid } from '@reduxjs/toolkit';
 
 const initialState = [
   { id: '1', title: 'First Post!', content: 'Hello!' },
@@ -9,9 +10,31 @@ const postsSlice = createSlice({
   name: 'posts',
   initialState,
   reducers: {
-    postAdded(state, action) {
-      state.push(action.payload);
+    postAdded: {
+      reducer(state, action) {
+        state.push(action.payload);
+      },
+      prepare(title, content) {
+        return {
+          payload: {
+            id: nanoid(),
+            title,
+            content,
+          },
+        };
+      },
     },
+    // postUpdated(state, action) {
+    //   const { id, title, content } = action.payload;
+
+    //   state.map((post) => {
+    //     if (post.id === id) {
+    //       return {
+    //         id, title, content,
+    //       };
+    //     }
+    //   });
+    // },
     postUpdated(state, action) {
       const { id, title, content } = action.payload;
       const existingPost = state.find((post) => post.id === id);
@@ -23,6 +46,6 @@ const postsSlice = createSlice({
   },
 });
 
-export const { postAdded } = postsSlice.actions;
+export const { postAdded, postUpdated } = postsSlice.actions;
 
 export default postsSlice.reducer;
