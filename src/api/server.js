@@ -9,9 +9,7 @@ import {
   association,
   RestSerializer,
 } from 'miragejs';
-
 import { nanoid } from '@reduxjs/toolkit';
-
 import faker from 'faker';
 import {
   sentence, paragraph, article, setRandom,
